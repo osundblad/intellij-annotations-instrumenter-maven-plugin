@@ -35,10 +35,8 @@ class ClassFinderClasspath {
     private final Map<URL, Loader> myLoadersMap = new HashMap<>();
 
     ClassFinderClasspath(final URL[] urls) {
-        if (urls.length > 0) {
-            for (int i = urls.length - 1; i >= 0; i--) {
-                myUrls.push(urls[i]);
-            }
+        for (int i = urls.length - 1; i >= 0; i--) {
+            myUrls.push(urls[i]);
         }
     }
 
@@ -297,7 +295,7 @@ class ClassFinderClasspath {
             }
 
             @Nullable
-            public InputStream getInputStream() throws IOException {
+            public InputStream getInputStream() {
                 try {
                     final ZipFile file = acquireZipFile();
                     if (file == null) {
