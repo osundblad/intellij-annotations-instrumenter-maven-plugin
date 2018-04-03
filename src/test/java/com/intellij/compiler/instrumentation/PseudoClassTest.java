@@ -3,9 +3,10 @@ package com.intellij.compiler.instrumentation;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLClassLoader;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -46,9 +47,13 @@ public class PseudoClassTest {
     }
 
     @NotNull
-    private InstrumentationClassFinder getInstrumentationClassFinder() {
-        final ClassLoader cl = ClassLoader.getSystemClassLoader();
-        final URL[] urls = ((URLClassLoader) cl).getURLs();
+    private InstrumentationClassFinder getInstrumentationClassFinder() throws MalformedURLException {
+        String[] paths = System.getProperty("java.class.path").split(System.getProperty("path.separator"));
+        URL[] urls = new URL[paths.length];
+        for (int i = 0; i < paths.length; i++) {
+            String path = paths[i];
+            urls[i] = new File(path).toURI().toURL();
+        }
         return new InstrumentationClassFinder(urls);
     }
 
