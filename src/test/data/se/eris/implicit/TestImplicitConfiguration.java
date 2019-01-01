@@ -15,7 +15,6 @@
  */
 package se.eris.implicit;
 
-import java.util.Arrays;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
