@@ -24,6 +24,7 @@ import java.util.Set;
 public class Configuration {
 
     private final boolean implicit;
+    private final boolean warnInsteadOfThrow;
     @NotNull
     private final AnnotationConfiguration annotationConfiguration;
     @NotNull
@@ -32,9 +33,11 @@ public class Configuration {
     @SuppressWarnings("BooleanParameter")
     public Configuration(
             final boolean implicit,
+            final boolean warnInsteadOfThrow,
             @NotNull final AnnotationConfiguration annotationConfiguration,
             @NotNull final ExcludeConfiguration excludeConfiguration) {
         this.implicit = implicit;
+        this.warnInsteadOfThrow = warnInsteadOfThrow;
         if (annotationConfiguration.isAnnotationsConfigured()) {
             this.annotationConfiguration = annotationConfiguration;
         } else {
@@ -61,6 +64,10 @@ public class Configuration {
 
     public boolean isImplicit() {
         return implicit;
+    }
+
+    public boolean isWarnInsteadOfThrow() {
+        return warnInsteadOfThrow;
     }
 
     @NotNull

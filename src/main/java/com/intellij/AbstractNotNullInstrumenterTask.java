@@ -56,6 +56,10 @@ abstract class AbstractNotNullInstrumenterTask extends AbstractMojo {
 
     @Parameter
     private boolean implicit;
+
+    @Parameter
+    private boolean warnInsteadOfThrow;
+
     @Parameter(property = "se.eris.notnull.instrument", defaultValue = "true")
     private boolean instrument;
 
@@ -98,6 +102,7 @@ abstract class AbstractNotNullInstrumenterTask extends AbstractMojo {
 
     private Configuration getConfiguration() {
         return new Configuration(implicit,
+                warnInsteadOfThrow,
                 getAnnotationConfiguration(nullToEmpty(notNull), nullToEmpty(nullable)),
                 getExcludeConfiguration(nullToEmpty(excludes)));
     }

@@ -26,6 +26,7 @@ public class VersionCompiler {
 
     public static Map<String, TestCompiler> compile(final Path destinationBasedir, final File... javaFiles) {
         final Configuration configuration = new Configuration(false,
+                false,
                 new AnnotationConfiguration(notnull(), nullable()),
                 new ExcludeConfiguration(Collections.emptySet()));
         return compile(destinationBasedir, configuration, javaFiles);

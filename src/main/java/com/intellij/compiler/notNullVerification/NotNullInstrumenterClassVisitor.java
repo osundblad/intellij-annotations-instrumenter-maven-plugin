@@ -89,9 +89,9 @@ public class NotNullInstrumenterClassVisitor extends ClassVisitor {
         final MethodVisitor methodVisitor = cv.visitMethod(access, name, desc, signature, exceptions);
         final ThrowOnNullMethodVisitor visitor;
         if (classAnnotatedImplicit || configuration.isImplicitInstrumentation(toClassName(classInfo.getName()))) {
-            visitor = new ImplicitThrowOnNullMethodVisitor(methodVisitor, argumentTypes, returnType, access, name, classInfo, nullable, isAnonymous);
+            visitor = new ImplicitThrowOnNullMethodVisitor(methodVisitor, argumentTypes, returnType, access, name, classInfo, nullable, isAnonymous, configuration.isWarnInsteadOfThrow());
         } else {
-            visitor = new AnnotationThrowOnNullMethodVisitor(methodVisitor, argumentTypes, returnType, access, name, classInfo, notnull, isAnonymous);
+            visitor = new AnnotationThrowOnNullMethodVisitor(methodVisitor, argumentTypes, returnType, access, name, classInfo, notnull, isAnonymous, configuration.isWarnInsteadOfThrow());
         }
         methodVisitors.add(visitor);
         return visitor;

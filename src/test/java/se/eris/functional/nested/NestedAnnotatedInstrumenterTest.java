@@ -55,6 +55,7 @@ class NestedAnnotatedInstrumenterTest {
     @BeforeAll
     static void beforeClass() {
         final Configuration configuration = new Configuration(false,
+                false,
                 new AnnotationConfiguration(),
                 new ExcludeConfiguration(Collections.emptySet()));
         compilers.putAll(VersionCompiler.compile(DESTINATION_BASEDIR, configuration, testClass.getJavaFile(SRC_DIR)));

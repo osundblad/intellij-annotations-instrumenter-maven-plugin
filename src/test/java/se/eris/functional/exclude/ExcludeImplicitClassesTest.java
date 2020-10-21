@@ -50,6 +50,7 @@ class ExcludeImplicitClassesTest {
     @BeforeAll
     static void beforeClass() {
         final Configuration configuration = new Configuration(true,
+                false,
                 new AnnotationConfiguration(),
                 new ExcludeConfiguration(Collections.singleton(ClassMatcher.namePattern("se.eris.exclude.*"))));
         compilers.putAll(VersionCompiler.compile(DESTINATION_BASEDIR, configuration, testClass.getJavaFile(SRC_DIR)));

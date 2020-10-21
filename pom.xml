@@ -6,7 +6,7 @@
 
     <groupId>se.eris</groupId>
     <artifactId>notnull-instrumenter-maven-plugin</artifactId>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>1.1.0-warn-instead-of-throw-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
 
     <description>NotNull annotations instrumenter maven plugin</description>
@@ -120,7 +120,6 @@
             <version>${junit-jupiter.version}</version>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
 
     <build>
