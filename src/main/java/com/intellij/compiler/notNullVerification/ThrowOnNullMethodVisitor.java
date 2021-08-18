@@ -50,8 +50,8 @@ public abstract class ThrowOnNullMethodVisitor extends MethodVisitor {
     Label startGeneratedCodeLabel;
     private List<String> parameterNames = null;
 
-    ThrowOnNullMethodVisitor(final int api, @Nullable final MethodVisitor mv, final Type[] argumentTypes, final Type returnType, final int methodAccess, final String methodName, final ClassInfo classInfo, final boolean isReturnNotNull, @Nullable final Boolean isAnonymousClass) {
-        super(api, mv);
+    ThrowOnNullMethodVisitor(@Nullable final MethodVisitor mv, final Type[] argumentTypes, final Type returnType, final int methodAccess, final String methodName, final ClassInfo classInfo, final boolean isReturnNotNull, @Nullable final Boolean isAnonymousClass) {
+        super(AsmUtils.ASM_OPCODES_VERSION, mv);
         this.argumentTypes = argumentTypes;
         this.methodAccess = methodAccess;
         this.returnType = returnType;
@@ -91,14 +91,13 @@ public abstract class ThrowOnNullMethodVisitor extends MethodVisitor {
      * <p>
      * {@inheritDoc}
      */
+    @Override
     public void visitInsn(final int opcode) {
-        if (shouldInclude() && opcode == Opcodes.ARETURN) {
-            if (isReturnNotNull) {
-                mv.visitInsn(Opcodes.DUP);
-                final Label skipLabel = new Label();
-                mv.visitJumpInsn(Opcodes.IFNONNULL, skipLabel);
-                generateThrow(ISE_CLASS_NAME, "NotNull method " + classInfo.getName() + "." + methodName + " must not return null", skipLabel);
-            }
+        if (shouldInclude() && opcode == Opcodes.ARETURN && isReturnNotNull && !isReturnVoidReferenceType()) {
+            mv.visitInsn(Opcodes.DUP);
+            final Label skipLabel = new Label();
+            mv.visitJumpInsn(Opcodes.IFNONNULL, skipLabel);
+            generateThrow(ISE_CLASS_NAME, "NotNull method " + classInfo.getName() + "." + methodName + " must not return null", skipLabel);
         }
         mv.visitInsn(opcode);
     }
@@ -141,12 +140,21 @@ public abstract class ThrowOnNullMethodVisitor extends MethodVisitor {
         mv.visitCode();
     }
 
+    @Override
+    public void visitMaxs(final int maxStack, final int maxLocals) {
+        try {
+            super.visitMaxs(maxStack, maxLocals);
+        } catch (final ArrayIndexOutOfBoundsException e) {
+            throw new ArrayIndexOutOfBoundsException("visitMaxs processing failed for method " + methodName + ": " + e.getMessage());
+        }
+    }
+
     private boolean shouldInclude() {
         return !shouldSkip();
     }
 
     private boolean shouldSkip() {
-        return isSynthetic() || isAnonymousClassConstructor();
+        return isSynthetic() || isAnonymousClassConstructor() || isEqualsMethod();
     }
 
     private boolean isAnonymousClassConstructor() {
@@ -154,11 +162,18 @@ public abstract class ThrowOnNullMethodVisitor extends MethodVisitor {
     }
 
     private boolean isConstructor() {
-        return "<init>".equals(this.methodName);
+        return CONSTRUCTOR_NAME.equals(this.methodName);
     }
 
     private boolean isSynthetic() {
         return (this.methodAccess & Opcodes.ACC_SYNTHETIC) != 0;
+    }
+
+    private boolean isEqualsMethod() {
+        return "equals".equals(this.methodName) &&
+                this.returnType.equals(Type.BOOLEAN_TYPE) &&
+                this.argumentTypes.length == 1 &&
+                this.argumentTypes[0].getSort() == Type.OBJECT;
     }
 
     private void generateThrow(@NotNull final String exceptionClass, @NotNull final String description, @NotNull final Label end) {
@@ -175,6 +190,10 @@ public abstract class ThrowOnNullMethodVisitor extends MethodVisitor {
 
     boolean isReturnReferenceType() {
         return AsmUtils.isReferenceType(this.returnType);
+    }
+
+    boolean isReturnVoidReferenceType() {
+        return returnType.getClassName().equals(Void.class.getName());
     }
 
     boolean isParameterReferenceType(final int parameter) {

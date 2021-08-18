@@ -45,7 +45,7 @@ public class VersionCompiler {
             final NotNullInstrumenter instrumenter = new NotNullInstrumenter(new NopLogWrapper());
             final int numberOfInstrumentedFiles = instrumenter.instrument(destination, configuration, Collections.emptyList());
 
-            assertTrue(numberOfInstrumentedFiles > 0);
+            assertTrue(numberOfInstrumentedFiles > 0, "No files instrumented, check that test file(s) are \"marked\" for instrumentation");
         }
         return compilers;
     }

@@ -51,7 +51,7 @@ public class TestCompilerOptions {
     }
 
     private String validateJavaVersion(final String javaVersion, final String versionName) {
-        if (!javaVersion.matches("^1(\\.[2-9]|[01])$")) {
+        if (!javaVersion.matches("^1(\\.[2-9]|[012345])$")) {
             throw new IllegalArgumentException("Unknown " + versionName + " version " + javaVersion);
         }
         return javaVersion;

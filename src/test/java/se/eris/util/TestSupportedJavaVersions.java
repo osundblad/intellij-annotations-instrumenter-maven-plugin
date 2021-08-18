@@ -8,7 +8,7 @@ import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
 @ParameterizedTest(name = "Java target version: {arguments}")
-@ValueSource(strings = {"1.7", "1.8", "1.9", "10", "11"})
+@ValueSource(strings = {"1.7", "1.8", "1.9", "10", "11", "12", "13", "14", "15"})
 public @interface TestSupportedJavaVersions {
 
     class SupportedVersions {

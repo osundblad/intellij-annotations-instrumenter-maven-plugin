@@ -1,19 +1,47 @@
 # intellij-annotations-instrumenter-maven-plugin
 
-IntelliJ IDEA annotations instrumenter maven plugin
+__IntelliJ IDEA annotations instrumenter maven plugin__
 
 This code is based on Vlad Rassokhin's intellij-annotations-instrumenter-maven-plugin. The following
-significant changes have been made:
-* Added Java 8 to 11 support
-* Added configuration: which NotNull/Nullable annotations to instrument (default is still @org.jetbrains.annotations.NotNull and  @org.jetbrains.annotations.Nullable)
+significant additions/changes have been made:
+
+* Added Java 8 to 15 support
+* Added configuration: which NotNull/Nullable annotations to instrument (default is still `@org.jetbrains.annotations.NotNull` and `@org.jetbrains.annotations.Nullable`)
 * Added basic unit and functional tests
 * Isolated Maven plugin dependencies to allow usage without Maven
 * Added implicit NotNull option
-* Added flag to turn instrumentation of
+* Added flag to turn instrumentation of (e.g. for testing code coverage)
+
+Note this project is *Teaware* so please click here [<img src="https://github.com/osundblad/intellij-annotations-instrumenter-maven-plugin/blob/master/src/docs/images/tea.png?raw=true" width="24">](https://www.buymeacoffee.com/osundblad)
+
+## What does it do
+
+This plugin in insert null checks on parameters and/or method return values in you byte code so that you don't have to 
+do it manually.
+
+For example:
+```java
+    public String append(String a, String b) {
+        Objects.requireNonNull(a);
+        Objects.requireNonNull(b);
+
+        String result = a + b;
+        Objects.requireNonNull(result);
+        return result;
+        }
+```
+can be replaced with*:
+```java
+public String append(String a, String b) {
+    return a + b;
+}
+```
+*using implicit instrumentation (see below).
+
 
 ## Usage
 
-Just update your pom.xml with following: 
+Just update your `pom.xml with following: 
 ```xml
 <dependencies>
     <dependency>
@@ -44,12 +72,12 @@ Just update your pom.xml with following:
 </build>
 ```
 
-And start adding @NotNull/@Nullable annotations to your code.
+and start adding `@NotNull`/`@Nullable` annotations to your code.
 
 
 ## Use other and/or multiple annotations
 
-By default only the annotation org.jetbrains.annotations.NotNull is supported if you
+By default, only the annotation org.jetbrains.annotations.NotNull is supported if you
 want to one or more other annotations add them to configuration, for example:
 ```xml
 <build>
@@ -86,7 +114,7 @@ no longer be included by default thus it must be added again if used (as in the 
 
 ## Implicit NotNull instrumentation
 
-If you don't like to have @NotNull on 99.99% of your parameters and methods turn on the implicit instrumentation:
+If you don't like to have `@NotNull` on 99.99% of your parameters and methods turn on the implicit instrumentation:
 ```xml
 <build>
     <plugins>
@@ -114,7 +142,7 @@ If you don't like to have @NotNull on 99.99% of your parameters and methods turn
 </build>
 ```
 
-Will instrument all parameters and return values with NotNull unless annotated with @Nullable (org.jetbrains.annotations.Nullable). Ie:
+Will instrument all parameters and return values with NotNull unless annotated with Nullable. I.e.
 ```java
 public String implicit(String a, String b) {
     if (a.equals(b)) {
@@ -127,6 +155,7 @@ public String implicit(String a, String b) {
 will throw an IllegalArgumentException if either the a or b parameter is null, and will throw an 
 IllegalStateException if a equals b (since it is not allowed to return null). To allow nulls you would 
 have to annotate the parameters/return value like this:
+
 ```java
 @Nullable
 public String implicit(@Nullable String a, @Nullable String b) {
