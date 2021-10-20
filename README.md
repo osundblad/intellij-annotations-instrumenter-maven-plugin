@@ -5,7 +5,7 @@ __IntelliJ IDEA annotations instrumenter maven plugin__
 This code is based on Vlad Rassokhin's intellij-annotations-instrumenter-maven-plugin. The following
 significant additions/changes have been made:
 
-* Added Java 8 to 15 support
+* Added Java 8 to 17 support
 * Added configuration: which NotNull/Nullable annotations to instrument (default is still `@org.jetbrains.annotations.NotNull` and `@org.jetbrains.annotations.Nullable`)
 * Added basic unit and functional tests
 * Isolated Maven plugin dependencies to allow usage without Maven

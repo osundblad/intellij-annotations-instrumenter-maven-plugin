@@ -10,4 +10,10 @@
 [se.eris@oss.sonatype.org](https://oss.sonatype.org/#nexus-search;quick~se.eris)
 
 
-**Support new JAva version**
+**Support new Java version**
+
+Update:
+* pom.xml: asm version
+* TestCompilerOptions.java
+* TestCompilerOptionsTest.java
+* TestSupportedJavaVersions.java
