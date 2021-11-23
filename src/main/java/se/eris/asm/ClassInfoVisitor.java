@@ -30,6 +30,7 @@ public class ClassInfoVisitor extends ClassVisitor {
         super(AsmUtils.ASM_OPCODES_VERSION);
     }
 
+    @Override
     public void visit(final int version, final int access, @NotNull final String name, final String signature, @Nullable final String superName, @Nullable final String[] interfaces) {
         classInfo = new ClassInfo(version, access, name, signature, superName, interfaces);
     }

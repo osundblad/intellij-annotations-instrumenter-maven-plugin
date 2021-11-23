@@ -8,6 +8,7 @@ import se.eris.notnull.Configuration;
 import se.eris.notnull.ExcludeConfiguration;
 import se.eris.util.TestCompiler;
 import se.eris.util.TestCompilerOptions;
+import se.eris.util.TestJava16AndLater;
 import se.eris.util.TestSupportedJavaVersions;
 
 import java.io.File;
@@ -22,9 +23,21 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class VersionCompiler {
 
-    private static final String[] SUPPORTED_VERSIONS = TestSupportedJavaVersions.SupportedVersions.getSupportedVersions();
+    private final String[] supportedVersions;
 
-    public static Map<String, TestCompiler> compile(final Path destinationBasedir, final File... javaFiles) {
+    public static VersionCompiler withJava16AndLater() {
+        return new VersionCompiler(TestJava16AndLater.SupportedVersions.getSupportedVersions());
+    }
+
+    public static VersionCompiler withSupportedVersions() {
+        return new VersionCompiler(TestSupportedJavaVersions.SupportedVersions.getSupportedVersions());
+    }
+
+    private VersionCompiler(final String[] supportedVersions) {
+        this.supportedVersions = supportedVersions;
+    }
+
+    public Map<String, TestCompiler> compile(final Path destinationBasedir, final File... javaFiles) {
         final Configuration configuration = new Configuration(false,
                 new AnnotationConfiguration(notnull(), nullable()),
                 new ExcludeConfiguration(Collections.emptySet()));
@@ -32,9 +45,9 @@ public class VersionCompiler {
     }
 
     @NotNull
-    public static Map<String, TestCompiler> compile(final Path destinationBasedir, final Configuration configuration, final File... javaFiles) {
+    public Map<String, TestCompiler> compile(final Path destinationBasedir, final Configuration configuration, final File... javaFiles) {
         final Map<String, TestCompiler> compilers = new HashMap<>();
-        for (final String version : SUPPORTED_VERSIONS) {
+        for (final String version : supportedVersions) {
             final Path destination = destinationBasedir.resolve(version);
             final TestCompiler compiler = TestCompiler.create(TestCompilerOptions.from(destination, version));
             if (!compiler.compile(javaFiles)) {
@@ -45,7 +58,7 @@ public class VersionCompiler {
             final NotNullInstrumenter instrumenter = new NotNullInstrumenter(new NopLogWrapper());
             final int numberOfInstrumentedFiles = instrumenter.instrument(destination, configuration, Collections.emptyList());
 
-            assertTrue(numberOfInstrumentedFiles > 0);
+            assertTrue(numberOfInstrumentedFiles > 0, "No files instrumented, check that test file(s) are \"marked\" for instrumentation");
         }
         return compilers;
     }

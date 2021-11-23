@@ -28,6 +28,7 @@ import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -42,7 +43,7 @@ class ParameterTypesTest {
 
     @BeforeAll
     static void beforeClass() {
-        compilers.putAll(VersionCompiler.compile(DESTINATION_BASEDIR, testClass.getJavaFile(SRC_DIR)));
+        compilers.putAll(VersionCompiler.withSupportedVersions().compile(DESTINATION_BASEDIR, testClass.getJavaFile(SRC_DIR)));
     }
 
     @TestSupportedJavaVersions
@@ -68,5 +69,15 @@ class ParameterTypesTest {
         final IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> ReflectionUtil.simulateMethodCall(instance, paramObject, (Object) null));
         assertEquals(String.format("NotNull annotated argument 0%s of %s.paramArray must not be null", VersionCompiler.maybeName(compilers.get(javaVersion), "array"), testClass.getAsmName()), exception.getMessage());
     }
+
+    public String append(String a, String b) {
+        Objects.requireNonNull(a);
+        Objects.requireNonNull(b);
+
+        String result = a + b;
+        Objects.requireNonNull(result);
+        return result;
+    }
+
 
 }

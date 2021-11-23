@@ -42,7 +42,7 @@ class ImplicitClassAnnotationInstrumenterTest {
 
     @BeforeAll
     static void beforeClass() {
-        compilers.putAll(VersionCompiler.compile(DESTINATION_BASEDIR, testClass.getJavaFile(SRC_DIR)));
+        compilers.putAll(VersionCompiler.withSupportedVersions().compile(DESTINATION_BASEDIR, testClass.getJavaFile(SRC_DIR)));
     }
 
     @TestSupportedJavaVersions
@@ -66,6 +66,13 @@ class ImplicitClassAnnotationInstrumenterTest {
     }
 
     @TestSupportedJavaVersions
+    void voidReturn_shouldNotBeInstrumented(final String javaVersion) throws Exception {
+        final Class<?> c = compilers.get(javaVersion).getCompiledClass(testClass.getName());
+        final Method voidReferenceReturnMethod = c.getMethod("voidReferenceReturn");
+        ReflectionUtil.simulateMethodCall(voidReferenceReturnMethod);
+    }
+
+    @TestSupportedJavaVersions
     void implicitConstructorParameter_shouldValidate(final String javaVersion) throws Exception {
         final Class<?> c = compilers.get(javaVersion).getCompiledClass(testClass);
         final Constructor<?> implicitParameterConstructor = c.getConstructor(String.class);
@@ -83,5 +90,4 @@ class ImplicitClassAnnotationInstrumenterTest {
         final Method anonymousClassNotNull = c.getMethod("anonymousClassNotNull");
         ReflectionUtil.simulateMethodCall(anonymousClassNotNull);
     }
-
 }

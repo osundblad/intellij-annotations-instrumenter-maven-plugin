@@ -42,7 +42,7 @@ class InnerClassInstrumenterTest {
 
     @BeforeAll
     static void beforeClass() {
-        compilers.putAll(VersionCompiler.compile(DESTINATION_BASEDIR, testClass.getJavaFile(SRC_DIR)));
+        compilers.putAll(VersionCompiler.withSupportedVersions().compile(DESTINATION_BASEDIR, testClass.getJavaFile(SRC_DIR)));
     }
 
     @TestSupportedJavaVersions

@@ -48,7 +48,7 @@ class NestedImplicitAnnotationInstrumenterTest {
         final Configuration configuration = new Configuration(true,
                 new AnnotationConfiguration(),
                 new ExcludeConfiguration(Collections.emptySet()));
-        compilers.putAll(VersionCompiler.compile(DESTINATION_BASEDIR, configuration, testClass.getJavaFile(SRC_DIR)));
+        compilers.putAll(VersionCompiler.withSupportedVersions().compile(DESTINATION_BASEDIR, configuration, testClass.getJavaFile(SRC_DIR)));
     }
 
     @TestSupportedJavaVersions

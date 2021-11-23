@@ -31,7 +31,7 @@ class ImplicitThrowOnNullMethodVisitor extends ThrowOnNullMethodVisitor {
     private final Set<String> nullableAnnotations;
 
     ImplicitThrowOnNullMethodVisitor(@Nullable final MethodVisitor methodVisitor, @NotNull final Type[] argumentTypes, @NotNull final Type returnType, final int access, @NotNull final String methodName, @NotNull final ClassInfo classInfo, @NotNull final Set<String> nullableAnnotations, @Nullable final Boolean isAnonymousClass) {
-        super(AsmUtils.ASM_OPCODES_VERSION, methodVisitor, argumentTypes, returnType, access, methodName, classInfo, true, isAnonymousClass);
+        super(methodVisitor, argumentTypes, returnType, access, methodName, classInfo, true, isAnonymousClass);
         this.nullableAnnotations = nullableAnnotations;
         addImplicitNotNulls();
     }
@@ -96,15 +96,6 @@ class ImplicitThrowOnNullMethodVisitor extends ThrowOnNullMethodVisitor {
     @Override
     public void visitLocalVariable(final String name, final String description, final String signature, final Label start, final Label end, final int index) {
         mv.visitLocalVariable(name, description, signature, (isParameter(index) && startGeneratedCodeLabel != null) ? startGeneratedCodeLabel : start, end, index);
-    }
-
-    @Override
-    public void visitMaxs(final int maxStack, final int maxLocals) {
-        try {
-            super.visitMaxs(maxStack, maxLocals);
-        } catch (final ArrayIndexOutOfBoundsException e) {
-            throw new ArrayIndexOutOfBoundsException("visitMaxs processing failed for method " + methodName + ": " + e.getMessage());
-        }
     }
 
     private boolean isNullableAnnotation(@NotNull final String annotation) {

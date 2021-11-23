@@ -50,7 +50,7 @@ class NotNullAnnotationInstrumenterTest {
     @BeforeAll
     static void beforeClass() {
         final Configuration configuration = new Configuration(false, new AnnotationConfiguration(notNull(), Collections.emptySet()), new ExcludeConfiguration(Collections.emptySet()));
-        compilers.putAll(VersionCompiler.compile(DESTINATION_BASEDIR, configuration, testClass.getJavaFile(SRC_DIR)));
+        compilers.putAll(VersionCompiler.withSupportedVersions().compile(DESTINATION_BASEDIR, configuration, testClass.getJavaFile(SRC_DIR)));
     }
 
     @NotNull

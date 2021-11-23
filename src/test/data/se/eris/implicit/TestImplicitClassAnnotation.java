@@ -16,6 +16,9 @@ public class TestImplicitClassAnnotation {
     public static void implicitParameter(final String s) {
     }
 
+    public static Void voidReferenceReturn() {
+        return null;
+    }
 
     public static void anonymousClassNullable() {
         new Foo((String) null) {}; // anonymous class - no way to annotate constructor parameters

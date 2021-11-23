@@ -21,7 +21,6 @@ import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Type;
-import se.eris.asm.AsmUtils;
 import se.eris.asm.ClassInfo;
 
 import java.util.Set;
@@ -31,7 +30,7 @@ class AnnotationThrowOnNullMethodVisitor extends ThrowOnNullMethodVisitor {
     private final Set<String> notNullAnnotations;
 
     AnnotationThrowOnNullMethodVisitor(@Nullable final MethodVisitor methodVisitor, @NotNull final Type[] argumentTypes, @NotNull final Type returnType, final int access, @NotNull final String methodName, @NotNull final ClassInfo classInfo, @NotNull final Set<String> notNullAnnotations, final Boolean isAnonymous) {
-        super(AsmUtils.ASM_OPCODES_VERSION, methodVisitor, argumentTypes, returnType, access, methodName, classInfo, false, isAnonymous);
+        super(methodVisitor, argumentTypes, returnType, access, methodName, classInfo, false, isAnonymous);
         this.notNullAnnotations = notNullAnnotations;
     }
 
@@ -82,15 +81,6 @@ class AnnotationThrowOnNullMethodVisitor extends ThrowOnNullMethodVisitor {
     @Override
     public void visitLocalVariable(final String name, final String description, final String signature, final Label start, final Label end, final int index) {
         mv.visitLocalVariable(name, description, signature, (isParameter(index) && startGeneratedCodeLabel != null) ? startGeneratedCodeLabel : start, end, index);
-    }
-
-    @Override
-    public void visitMaxs(final int maxStack, final int maxLocals) {
-        try {
-            super.visitMaxs(maxStack, maxLocals);
-        } catch (final ArrayIndexOutOfBoundsException e) {
-            throw new ArrayIndexOutOfBoundsException("visitMaxs processing failed for method " + methodName + ": " + e.getMessage());
-        }
     }
 
     private boolean isNotNullAnnotation(@NotNull final String annotation) {

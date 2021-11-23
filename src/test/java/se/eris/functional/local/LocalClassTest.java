@@ -30,7 +30,7 @@ class LocalClassTest {
 
 	@BeforeAll
 	static void beforeClass() {
-		compilers.putAll(VersionCompiler.compile(DESTINATION_BASEDIR, outerClass.getJavaFile(SRC_DIR)));
+		compilers.putAll(VersionCompiler.withSupportedVersions().compile(DESTINATION_BASEDIR, outerClass.getJavaFile(SRC_DIR)));
 	}
 
 	@TestSupportedJavaVersions
